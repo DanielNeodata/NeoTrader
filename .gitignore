@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/NeoTrader.slnx/v18
+/.vs
+/bin/Debug/net10.0
+/obj
