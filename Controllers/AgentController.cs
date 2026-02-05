@@ -10,6 +10,23 @@ namespace NeoTrader.Controllers
 		{
 			return RedirectToAction("Symbols");
 		}
+		[HttpGet]
+		[HttpPost]
+		public async Task<IActionResult> All()
+		{
+			try
+			{
+				await new cnNeoAgent().CaptureSymbols();
+				await new cnNeoAgent().CaptureEvents();
+				await new cnNeoAgent().PredictiveData();
+
+				return Ok(new neoResponse(true, "OK", null));
+			}
+			catch (Exception err)
+			{
+				return BadRequest(new neoResponse(false, "ERR", err.Message));
+			}
+		}
 
 		[HttpGet]
 		[HttpPost]
@@ -30,10 +47,7 @@ namespace NeoTrader.Controllers
 		{
 			try
 			{
-				DataTable _max = daNeoAgent.GetRecords("SELECT CAST(max(DatePrice) as date) as DatePrice FROM dbo.mod_trader_data");
-				DateTime _dateFrom = Convert.ToDateTime(_max.Rows[0]["DatePrice"].ToString()); // Captura a partir de la maxima fecha ya registrada
-				//DateTime _dateFrom = new DateTime(1990, 1, 1);// Captura completa 
-				await new cnNeoAgent().CaptureSymbols(daNeoAgent.GetRecords("SELECT * FROM dbo.mod_trader_symbols ORDER BY code ASC"), (neoContext.DayDiff(_dateFrom) * -1));
+				await new cnNeoAgent().CaptureSymbols();
 
 				return Ok(new neoResponse(true, "OK", null));
 			}
@@ -49,7 +63,7 @@ namespace NeoTrader.Controllers
 		{
 			try
 			{
-				await new cnNeoAgent().CaptureEvents(daNeoAgent.GetRecords("SELECT * FROM dbo.mod_trader_events ORDER BY id ASC"));
+				await new cnNeoAgent().CaptureEvents();
 
 				return Ok(new neoResponse(true, "OK", null));
 			}
@@ -65,7 +79,7 @@ namespace NeoTrader.Controllers
 		{
 			try
 			{
-				await new cnNeoAgent().PredictiveData(daNeoAgent.GetRecords("SELECT * FROM dbo.mod_trader_data ORDER BY DatePrice ASC"));
+				await new cnNeoAgent().PredictiveData();
 
 				return Ok(new neoResponse(true, "OK", null));
 			}

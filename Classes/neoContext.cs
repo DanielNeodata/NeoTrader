@@ -51,9 +51,11 @@
 		{
 			DateTime currentDate = DateTime.Now;
 			TimeSpan timeDifference = (date - currentDate);
-			return Math.Abs(timeDifference.Days);
+			int _diff = Math.Abs(timeDifference.Days);
+			if (_diff == 0) { _diff = 1; }
+			return _diff;
 		}
-		public static double DiffPercetage(double _actual, double _close)
+		public static double DiffPercentage(double _actual, double _close)
 		{
 			double _ret = (_actual - _close) / (((_actual + _close) / 2));
 			return _ret;

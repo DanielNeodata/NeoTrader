@@ -1,6 +1,8 @@
 ﻿@model SymbolsViewModel;
 @{
     string[] _date;
+    string _52min = "";
+    string _52max = "";
 }
 <div class="container-fluid">
     <div class="row">
@@ -21,16 +23,14 @@
                             <th class="text-start">Tipo</th>
                             <th class="text-start">Nombre</th>
                             <th class="text-center">Moneda</th>
+                            <th class="text-end">Volúmen</th>
                             <th class="text-muted text-end">Apertura</th>
-                            <th class="text-end">Vol.normal</th>
-                            <th class="text-end">Vol.actual</th>
-                            <th class="text-end"><span class="badge bg-info">52</span></th>
-                            <th class="text-end"><span class="badge bg-primary">52</span></th>
-                            <th class="text-info text-end">Mínimo</th>
-                            <th class="text-primary text-end">Máximo</th>
                             <th class="text-success text-end">Vender</th>
                             <th class="text-danger text-end">Comprar</th>
                             <th class="text-muted text-end">Cierre</th>
+                            <th class="text-primary text-end">% 1 día</th>
+                            <th class="text-primary text-end">% 1 semana</th>
+                            <th class="text-primary text-end">% 1 mes</th>
                             <th class="text-dark text-end">a 1 día</th>
                             <th class="text-dark text-end">a 1 semana</th>
                             <th class="text-dark text-end">a 1 mes</th>
@@ -40,22 +40,26 @@
                         @foreach (SymbolsViewModelItems simbolo in Model.simbolos)
                         {
                             _date = simbolo.DatePrice.ToString().Split(" ");
+                            _52min = "";
+                            _52max = "";
+                            if (simbolo.Close <= simbolo.FiftyTwoWeekLow){_52min = "<span class=''badge bg-info'>52</span>";}
+                            if (simbolo.Close >= simbolo.FiftyTwoWeekHigh){_52max = "<span class='badge bg-primary'>52</span>";}
+
+
                             <tr>
                                 @Html.Raw(neoContext.ToCompareDate(_date))
                                 <td class="text-start">@simbolo.code</td>
                                 <td class="text-start">@simbolo.instrumentType</td>
                                 <td class="text-start">@simbolo.description</td>
                                 <td class="text-center">@simbolo.currency</td>
+                                <td class="text-end">@neoContext.ToMoney(simbolo.Volume, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Open, "")</td>
-                                <td class="text-end">@neoContext.ToMoney(simbolo.RegularMarketVolume, "")</td>
-                                <td class="text-endl">@neoContext.ToMoney(simbolo.Volume, "")</td>
-                                <td class="text-info text-end">@neoContext.ToMoney(simbolo.FiftyTwoWeekLow, "")</td>
-                                <td class="text-primary text-end">@neoContext.ToMoney(simbolo.FiftyTwoWeekHigh, "")</td>
-                                <td class="text-info text-end">@neoContext.ToMoney(simbolo.RegularMarketDayLow, "")</td>
-                                <td class="text-primary text-end">@neoContext.ToMoney(simbolo.RegularMarketDayHigh, "")</td>
-                                <td class="text-success text-end bold">@neoContext.ToMoney(simbolo.Low, "")</td>
-                                <td class="text-danger text-end bold">@neoContext.ToMoney(simbolo.High, "")</td>
+                                <td class="text-success text-end bold">@_52min @neoContext.ToMoney(simbolo.Low, "")</td>
+                                <td class="text-danger text-end bold">@_52max @neoContext.ToMoney(simbolo.High, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Close, "")</td>
+                                <td class="text-primary text-end">@simbolo.PercentageMovementPreviousDay</td>
+                                <td class="text-primary text-end">@simbolo.PercentageMovementPreviousWeek</td>
+                                <td class="text-primary text-end">@simbolo.PercentageMovementPreviousMonth</td>
                                 <td class="text-end">@simbolo.PredictNextDay</td>
                                 <td class="text-end">@simbolo.PredictNextWeek</td>
                                 <td class="text-end">@simbolo.PredictNextMonth</td>

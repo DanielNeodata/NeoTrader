@@ -89,4 +89,15 @@ var _FUNCTIONS = {
 			_FUNCTIONS.onWait(false);
 		});
 	},
+	OnAll: function (_this) {
+		_FUNCTIONS.onWait(true);
+		_this.fadeOut("fast");
+		_FUNCTIONS.ExecutePostAjax("All", null).then(function (data) {
+			window.location = "Symbols";
+		}).catch(function (e) {
+			if (e.Error != "") { alert(e.Error); }
+			_this.fadeIn("slow");
+			_FUNCTIONS.onWait(false);
+		});
+	},
 }
