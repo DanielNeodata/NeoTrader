@@ -165,7 +165,6 @@ namespace NeoTrader.DAL
 					_i = Convert.ToInt32(cmd.ExecuteScalar());
 					ndx++;
 				}
-				Consolidate();
 				return true;
 			}
 		}

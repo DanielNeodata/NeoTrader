@@ -89,6 +89,17 @@ var _FUNCTIONS = {
 			_FUNCTIONS.onWait(false);
 		});
 	},
+	OnConsolidate: function (_this) {
+		_FUNCTIONS.onWait(true);
+		_this.fadeOut("fast");
+		_FUNCTIONS.ExecutePostAjax("Consolidate", null).then(function (data) {
+			window.location = "Symbols";
+		}).catch(function (e) {
+			if (e.Error != "") { alert(e.Error); }
+			_this.fadeIn("slow");
+			_FUNCTIONS.onWait(false);
+		});
+	},
 	OnAll: function (_this) {
 		_FUNCTIONS.onWait(true);
 		_this.fadeOut("fast");

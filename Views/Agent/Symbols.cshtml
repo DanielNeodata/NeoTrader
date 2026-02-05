@@ -3,6 +3,10 @@
     string[] _date;
     string _52min = "";
     string _52max = "";
+
+    string _pDay = "";
+    string _pWeek = "";
+    string _pMonth = "";
 }
 <div class="container-fluid">
     <div class="row">
@@ -42,10 +46,38 @@
                             _date = simbolo.DatePrice.ToString().Split(" ");
                             _52min = "";
                             _52max = "";
-                            if (simbolo.Close <= simbolo.FiftyTwoWeekLow){_52min = "<span class=''badge bg-info'>52</span>";}
-                            if (simbolo.Close >= simbolo.FiftyTwoWeekHigh){_52max = "<span class='badge bg-primary'>52</span>";}
-
-
+                            if (simbolo.Close <= simbolo.FiftyTwoWeekLow) { _52min = "<span class='badge bg-info p-2'>52</span>"; }
+                            if (simbolo.Close >= simbolo.FiftyTwoWeekHigh) { _52max = "<span class='badge bg-primary p-2'>52</span>"; }
+                            _pDay = "<span class='badge bg-info p-2'>=</span>";
+                            switch (simbolo.PredictNextDay)
+                            {
+                                case -1:
+                                    _pDay = "<span class='badge bg-danger p-2'>baja</span>";
+                                    break;
+                                case 1:
+                                    _pDay = "<span class='badge bg-success p-2'>sube</span>";
+                                    break;
+                            }
+                            _pWeek = "<span class='badge bg-info p-2'>=</span>";
+                            switch (simbolo.PredictNextWeek)
+                            {
+                                case -1:
+                                    _pWeek = "<span class='badge bg-danger p-2'>baja</span>";
+                                    break;
+                                case 1:
+                                    _pWeek = "<span class='badge bg-success p-2'>sube</span>";
+                                    break;
+                            }
+                            _pMonth = "<span class='badge bg-info p-2'>=</span>";
+                            switch (simbolo.PredictNextMonth)
+                            {
+                                case -1:
+                                    _pMonth = "<span class='badge bg-danger p-2'>baja</span>";
+                                    break;
+                                case 1:
+                                    _pMonth = "<span class='badge bg-success p-2'>sube</span>";
+                                    break;
+                            }
                             <tr>
                                 @Html.Raw(neoContext.ToCompareDate(_date))
                                 <td class="text-start">@simbolo.code</td>
@@ -54,15 +86,15 @@
                                 <td class="text-center">@simbolo.currency</td>
                                 <td class="text-end">@neoContext.ToMoney(simbolo.Volume, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Open, "")</td>
-                                <td class="text-success text-end bold">@_52min @neoContext.ToMoney(simbolo.Low, "")</td>
-                                <td class="text-danger text-end bold">@_52max @neoContext.ToMoney(simbolo.High, "")</td>
+                                <td class="text-success text-end bold">@Html.Raw(_52min) @neoContext.ToMoney(simbolo.Low, "")</td>
+                                <td class="text-danger text-end bold">@Html.Raw(_52max) @neoContext.ToMoney(simbolo.High, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Close, "")</td>
                                 <td class="text-primary text-end">@simbolo.PercentageMovementPreviousDay</td>
                                 <td class="text-primary text-end">@simbolo.PercentageMovementPreviousWeek</td>
                                 <td class="text-primary text-end">@simbolo.PercentageMovementPreviousMonth</td>
-                                <td class="text-end">@simbolo.PredictNextDay</td>
-                                <td class="text-end">@simbolo.PredictNextWeek</td>
-                                <td class="text-end">@simbolo.PredictNextMonth</td>
+                                <td class="text-end">@Html.Raw(_pDay)</td>
+                                <td class="text-end">@Html.Raw(_pWeek)</td>
+                                <td class="text-end">@Html.Raw(_pMonth)</td>
                             </tr>
                         }
                     </tbody>

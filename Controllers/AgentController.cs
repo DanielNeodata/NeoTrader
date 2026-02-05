@@ -19,6 +19,7 @@ namespace NeoTrader.Controllers
 				await new cnNeoAgent().CaptureSymbols();
 				await new cnNeoAgent().CaptureEvents();
 				await new cnNeoAgent().PredictiveData();
+				await new cnNeoAgent().Consolidate();
 
 				return Ok(new neoResponse(true, "OK", null));
 			}
@@ -80,6 +81,22 @@ namespace NeoTrader.Controllers
 			try
 			{
 				await new cnNeoAgent().PredictiveData();
+
+				return Ok(new neoResponse(true, "OK", null));
+			}
+			catch (Exception err)
+			{
+				return BadRequest(new neoResponse(false, "ERR", err.Message));
+			}
+		}
+		
+		[HttpGet]
+		[HttpPost]
+		public async Task<IActionResult> Consolidate()
+		{
+			try
+			{
+				await new cnNeoAgent().Consolidate();
 
 				return Ok(new neoResponse(true, "OK", null));
 			}
