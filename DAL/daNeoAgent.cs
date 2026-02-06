@@ -18,11 +18,10 @@ namespace NeoTrader.DAL
 			}
 			return dtResponse;
 		}
-
-		public static List<SymbolsViewModelItems> GetSymbols() {
-			return neoContext.ConvertDataTableToList<SymbolsViewModelItems>(GetRecords("SELECT * FROM dbo.mod_trader_symbols ORDER BY code ASC"));
+		public static DataTable GetSymbols()
+		{
+			return GetRecords("SELECT * FROM dbo.mod_trader_symbols WHERE [offline] is null ORDER BY code ASC");
 		}
-
 		public static async Task<List<AgentViewModelItem>> SaveData(List<AgentViewModelItem> records)
 		{
 			int _i = 0;
@@ -114,10 +113,7 @@ namespace NeoTrader.DAL
 				/*Entrenamiento del modelo*/
 				Predictor _state = new Predictor();
 				List<PredictorInputData> trainning = new List<PredictorInputData>();
-				foreach (DataRow item in data.Rows)
-				{
-					trainning.Add(CalculateGaussDay(item));
-				}
+				foreach (DataRow item in data.Rows) { trainning.Add(CalculateGaussDay(item)); }
 				_state.Load(trainning);
 				
 				connection.Open();
@@ -169,7 +165,7 @@ namespace NeoTrader.DAL
 			}
 		}
 		public static void Consolidate() {
-			List<SymbolsViewModelItems> _simbolos = GetSymbols();
+			List<SymbolsViewModelItems> _simbolos = neoContext.ConvertDataTableToList<SymbolsViewModelItems>(GetSymbols());
 			using (SqlConnection connection = new SqlConnection(neoContext.connString))
 			{
 				connection.Open();
@@ -185,7 +181,6 @@ namespace NeoTrader.DAL
 				}
 			}
 		}
-
 		public static PredictorInputData CalculateGaussDay(DataRow item)
 		{
 			int i = 0;
@@ -239,9 +234,8 @@ namespace NeoTrader.DAL
 				s_puntos.Add(new PuntoCurva() { Fecha = s_FechaFinPicoGauss, Valor = s_ValorFechaFinPicoGauss });
 				s_puntos.Add(new PuntoCurva() { Fecha = s_FechaFinGauss, Valor = s_ValorFechaFinGauss });
 				ModificadorMaterialGauss += float.Parse(neoContext.CalcularIntegral(s_puntos).ToString());
-				ModificadorBaseGauss += float.Parse(solapado["ModificadorBaseGauss"].ToString());
 			}
-			ModificadorBaseGauss = (ModificadorBaseGauss / i);
+			ModificadorBaseGauss = (ModificadorMaterialGauss / i);
 			ModificadorFinalGauss = (ModificadorBaseGauss + ModificadorMaterialGauss);
 			return new PredictorInputData()
 			{
@@ -266,7 +260,6 @@ namespace NeoTrader.DAL
 			};
 
 		}
-
 		public static EventViewModelItem CalculateGaussEvent(DataRow item)
 		{
 			double[] _valsGauss = [0, 0, 0];

@@ -21,6 +21,13 @@
 			}
 			return list;
 		}
+		public static string ToPercentage(object data)
+		{
+			NumberFormatInfo customFormat = (NumberFormatInfo)deDECulture.NumberFormat.Clone();
+			customFormat.CurrencySymbol = "%";
+			customFormat.CurrencyPositivePattern = 1;
+			return Convert.ToDecimal(data.ToString()).ToString("C", customFormat);
+		}
 		public static string ToMoney(object data, string _curr)
 		{
 			NumberFormatInfo customFormat = (NumberFormatInfo)deDECulture.NumberFormat.Clone();
@@ -57,8 +64,7 @@
 		}
 		public static double DiffPercentage(double _actual, double _close)
 		{
-			double _ret = (_actual - _close) / (((_actual + _close) / 2));
-			return _ret;
+			return (((_actual / _close) * 100) - 100);
 		}
 
 		public static double CalcularIntegral(List<PuntoCurva> puntos)

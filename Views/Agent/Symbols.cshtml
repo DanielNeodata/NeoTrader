@@ -7,6 +7,10 @@
     string _pDay = "";
     string _pWeek = "";
     string _pMonth = "";
+
+    string _cDay = "";
+    string _cWeek = "";
+    string _cMonth = "";
 }
 <div class="container-fluid">
     <div class="row">
@@ -22,22 +26,22 @@
                 <table class="table table-condensed table-hover" style="font-size:12px;">
                     <thead class="thead-dark">
                         <tr>
-                            <th class="text-start">Fecha</th>
-                            <th class="text-start">Símbolo</th>
-                            <th class="text-start">Tipo</th>
-                            <th class="text-start">Nombre</th>
-                            <th class="text-center">Moneda</th>
-                            <th class="text-end">Volúmen</th>
-                            <th class="text-muted text-end">Apertura</th>
-                            <th class="text-success text-end">Vender</th>
-                            <th class="text-danger text-end">Comprar</th>
-                            <th class="text-muted text-end">Cierre</th>
-                            <th class="text-primary text-end">% 1 día</th>
-                            <th class="text-primary text-end">% 1 semana</th>
-                            <th class="text-primary text-end">% 1 mes</th>
-                            <th class="text-dark text-end">a 1 día</th>
-                            <th class="text-dark text-end">a 1 semana</th>
-                            <th class="text-dark text-end">a 1 mes</th>
+                            <th class="text-dark text-start">Fecha</th>
+                            <th class="text-dark text-start">Símbolo</th>
+                            <th class="text-dark text-start">Tipo</th>
+                            <th class="text-dark text-start">Nombre</th>
+                            <th class="text-dark text-center">Moneda</th>
+                            <th class="text-dark text-end">Volúmen</th>
+                            <th class="text-dark text-end">Apertura</th>
+                            <th class="text-dark text-end">Cierre</th>
+                            <th class="text-dark text-end">% día</th>
+                            <th class="text-dark text-end">% semana</th>
+                            <th class="text-dark text-end">% mes</th>
+                            <th class="text-dark text-center">+1</th>
+                            <th class="text-dark text-center">+7</th>
+                            <th class="text-dark text-center">+30</th>
+                            <th class="text-dark text-end">Vender</th>
+                            <th class="text-dark text-end">Comprar</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -78,6 +82,19 @@
                                     _pMonth = "<span class='badge bg-success p-2'>sube</span>";
                                     break;
                             }
+                            _cDay = "text-info";
+                            if (simbolo.PercentageMovementPreviousDay > 0) { _cDay = "text-success"; } 
+                            if (simbolo.PercentageMovementPreviousDay < -0.01) { _cDay = "text-danger"; }
+                            if (simbolo.PercentageMovementPreviousDay > -0.01 && simbolo.PercentageMovementPreviousDay <= 0) { simbolo.PercentageMovementPreviousDay = 0; _cMonth = "text-info"; }
+                            _cWeek = "text-info";
+                            if (simbolo.PercentageMovementPreviousWeek > 0) { _cWeek = "text-success"; } 
+                            if (simbolo.PercentageMovementPreviousWeek < -0.01) { _cWeek = "text-danger"; }
+                            if (simbolo.PercentageMovementPreviousWeek > -0.01 && simbolo.PercentageMovementPreviousWeek <= 0) { simbolo.PercentageMovementPreviousWeek = 0; _cMonth = "text-info"; }
+                            _cMonth = "text-info";
+                            if (simbolo.PercentageMovementPreviousMonth > 0) { _cMonth = "text-success"; } 
+                            if (simbolo.PercentageMovementPreviousMonth < -0.01) { _cMonth = "text-danger"; }
+                            if (simbolo.PercentageMovementPreviousMonth > -0.01 && simbolo.PercentageMovementPreviousMonth <= 0) { simbolo.PercentageMovementPreviousMonth = 0; _cMonth = "text-info"; }
+
                             <tr>
                                 @Html.Raw(neoContext.ToCompareDate(_date))
                                 <td class="text-start">@simbolo.code</td>
@@ -86,15 +103,15 @@
                                 <td class="text-center">@simbolo.currency</td>
                                 <td class="text-end">@neoContext.ToMoney(simbolo.Volume, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Open, "")</td>
+                                <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Close, "")</td>
+                                <td class="@_cDay text-end">@neoContext.ToPercentage(simbolo.PercentageMovementPreviousDay)</td>
+                                <td class="@_cWeek text-end">@neoContext.ToPercentage(simbolo.PercentageMovementPreviousWeek)</td>
+                                <td class="@_cMonth text-end">@neoContext.ToPercentage(simbolo.PercentageMovementPreviousMonth)</td>
+                                <td class="text-center">@Html.Raw(_pDay)</td>
+                                <td class="text-center">@Html.Raw(_pWeek)</td>
+                                <td class="text-center">@Html.Raw(_pMonth)</td>
                                 <td class="text-success text-end bold">@Html.Raw(_52min) @neoContext.ToMoney(simbolo.Low, "")</td>
                                 <td class="text-danger text-end bold">@Html.Raw(_52max) @neoContext.ToMoney(simbolo.High, "")</td>
-                                <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Close, "")</td>
-                                <td class="text-primary text-end">@simbolo.PercentageMovementPreviousDay</td>
-                                <td class="text-primary text-end">@simbolo.PercentageMovementPreviousWeek</td>
-                                <td class="text-primary text-end">@simbolo.PercentageMovementPreviousMonth</td>
-                                <td class="text-end">@Html.Raw(_pDay)</td>
-                                <td class="text-end">@Html.Raw(_pWeek)</td>
-                                <td class="text-end">@Html.Raw(_pMonth)</td>
                             </tr>
                         }
                     </tbody>

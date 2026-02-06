@@ -59,7 +59,10 @@ var _FUNCTIONS = {
 	OnCaptureSymbols: function (_this) {
 		_FUNCTIONS.onWait(true);
 		_this.fadeOut("fast");
-		_FUNCTIONS.ExecutePostAjax("CaptureSymbols", null).then(function (data) {
+		var _reset = 0;
+		if ($(".chkReset").prop("checked")) { _reset = 1; }
+		var _params = { "_reset": _reset };
+		_FUNCTIONS.ExecutePostAjax("CaptureSymbols", _params).then(function (data) {
 			window.location = "Symbols";
 		}).catch(function (e) {
 			if (e.Error != "") { alert(e.Error); }
@@ -103,7 +106,10 @@ var _FUNCTIONS = {
 	OnAll: function (_this) {
 		_FUNCTIONS.onWait(true);
 		_this.fadeOut("fast");
-		_FUNCTIONS.ExecutePostAjax("All", null).then(function (data) {
+		var _reset = 0;
+		if ($(".chkReset").prop("checked")) { _reset = 1; }
+		var _params = { "_reset": _reset };
+		_FUNCTIONS.ExecutePostAjax("All", _params).then(function (data) {
 			window.location = "Symbols";
 		}).catch(function (e) {
 			if (e.Error != "") { alert(e.Error); }

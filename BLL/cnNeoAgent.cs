@@ -5,14 +5,15 @@ namespace NeoTrader.BLL
 {
 	public class cnNeoAgent
 	{
-		public async Task<List<AgentViewModelItem>> CaptureSymbols()
+		public async Task<List<AgentViewModelItem>> CaptureSymbols(int? _reset)
 		{
-			DataTable symbols = daNeoAgent.GetRecords("SELECT * FROM dbo.mod_trader_symbols ORDER BY code ASC");
+			DataTable symbols = daNeoAgent.GetSymbols();
 			DataTable _max = daNeoAgent.GetRecords("SELECT CAST(max(DatePrice) as date) as DatePrice FROM dbo.mod_trader_data");
-			//DateTime _dateFrom = Convert.ToDateTime(_max.Rows[0]["DatePrice"].ToString()); // Captura a partir de la maxima fecha ya registrada
-			DateTime _dateFrom = new DateTime(1990, 1, 1);// Captura completa 
+			// Captura a partir de la maxima fecha ya registrada
+			DateTime _dateFrom = Convert.ToDateTime(_max.Rows[0]["DatePrice"].ToString());
+			// Captura completa 
+			if (_reset.HasValue && _reset != 0) { _dateFrom = new DateTime(1990, 1, 1); }
 			int iDaysFrom = (neoContext.DayDiff(_dateFrom) * -1);
-
 			AgentViewModel _List = new AgentViewModel();
 			YahooClient yahooFinanceClient = new YahooClient();
 			try

@@ -12,11 +12,11 @@ namespace NeoTrader.Controllers
 		}
 		[HttpGet]
 		[HttpPost]
-		public async Task<IActionResult> All()
+		public async Task<IActionResult> All(int? _reset)
 		{
 			try
 			{
-				await new cnNeoAgent().CaptureSymbols();
+				await new cnNeoAgent().CaptureSymbols(_reset);
 				await new cnNeoAgent().CaptureEvents();
 				await new cnNeoAgent().PredictiveData();
 				await new cnNeoAgent().Consolidate();
@@ -34,7 +34,7 @@ namespace NeoTrader.Controllers
 		public async Task<IActionResult> Symbols() { 
 			try
 			{
-				return View(new SymbolsViewModel() { simbolos = daNeoAgent.GetSymbols() });
+				return View(new SymbolsViewModel() { simbolos = neoContext.ConvertDataTableToList<SymbolsViewModelItems>(daNeoAgent.GetSymbols()) });
 			}
 			catch (Exception err)
 			{
@@ -44,11 +44,11 @@ namespace NeoTrader.Controllers
 
 		[HttpGet]
 		[HttpPost]
-		public async Task<IActionResult> CaptureSymbols()
+		public async Task<IActionResult> CaptureSymbols(int? _reset)
 		{
 			try
 			{
-				await new cnNeoAgent().CaptureSymbols();
+				await new cnNeoAgent().CaptureSymbols(_reset);
 
 				return Ok(new neoResponse(true, "OK", null));
 			}
