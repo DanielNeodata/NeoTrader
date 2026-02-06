@@ -12,6 +12,9 @@ namespace NeoTrader.Classes
 			ExperimentResult<RegressionMetrics> experimentResult = mlContext.Auto().CreateRegressionExperiment(ExperimentTime).Execute(trainingDataView, LabelColumnName);
 			RunDetail<RegressionMetrics> best = experimentResult.BestRun;
 			trainedModel = best.Model;
+
+			/*Ver de implementar : XGBoost with microsoft ml.net sample with C#*/
+			/*Ver de implementar : LightGBM with microsoft ml.net sample with C#*/
 		}
 
 		public PredictorOutputData Predict(PredictorInputData _actualState) {
