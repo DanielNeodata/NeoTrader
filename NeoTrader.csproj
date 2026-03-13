@@ -12,8 +12,8 @@
     <PackageReference Include="Microsoft.ML.AutoML" Version="0.23.0" />
     <PackageReference Include="Microsoft.ML.DataView" Version="5.0.0" />
     <PackageReference Include="OoplesFinance.YahooFinanceAPI" Version="1.7.1" />
-    <PackageReference Include="RestSharp" Version="113.1.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="RestSharp" Version="114.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.1" />
   </ItemGroup>
 
   <ItemGroup>
