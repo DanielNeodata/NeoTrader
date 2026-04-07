@@ -4,12 +4,3 @@ $("body").off("click", ".btnCaptureSymbols").on("click", ".btnCaptureSymbols", f
 $("body").off("click", ".btnCaptureEvents").on("click", ".btnCaptureEvents", function () {
 	_FUNCTIONS.OnCaptureEvents($(this));
 });
-$("body").off("click", ".btnPredictiveData").on("click", ".btnPredictiveData", function () {
-	_FUNCTIONS.OnPredictiveData($(this));
-});
-$("body").off("click", ".btnConsolidate").on("click", ".btnConsolidate", function () {
-	_FUNCTIONS.OnConsolidate($(this));
-});
-$("body").off("click", ".btnAll").on("click", ".btnAll", function () {
-	_FUNCTIONS.OnAll($(this));
-});

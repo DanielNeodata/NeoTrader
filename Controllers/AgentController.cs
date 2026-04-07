@@ -10,24 +10,6 @@ namespace NeoTrader.Controllers
 		{
 			return RedirectToAction("Symbols");
 		}
-		[HttpGet]
-		[HttpPost]
-		public async Task<IActionResult> All(int? _reset)
-		{
-			try
-			{
-				await new cnNeoAgent().CaptureSymbols(_reset);
-				await new cnNeoAgent().CaptureEvents();
-				await new cnNeoAgent().PredictiveData();
-				await new cnNeoAgent().Consolidate();
-
-				return Ok(new neoResponse(true, "OK", null));
-			}
-			catch (Exception err)
-			{
-				return BadRequest(new neoResponse(false, "ERR", err.Message));
-			}
-		}
 
 		[HttpGet]
 		[HttpPost]
@@ -65,38 +47,6 @@ namespace NeoTrader.Controllers
 			try
 			{
 				await new cnNeoAgent().CaptureEvents();
-
-				return Ok(new neoResponse(true, "OK", null));
-			}
-			catch (Exception err)
-			{
-				return BadRequest(new neoResponse(false, "ERR", err.Message));
-			}
-		}
-
-		[HttpGet]
-		[HttpPost]
-		public async Task<IActionResult> PredictiveData()
-		{
-			try
-			{
-				await new cnNeoAgent().PredictiveData();
-
-				return Ok(new neoResponse(true, "OK", null));
-			}
-			catch (Exception err)
-			{
-				return BadRequest(new neoResponse(false, "ERR", err.Message));
-			}
-		}
-		
-		[HttpGet]
-		[HttpPost]
-		public async Task<IActionResult> Consolidate()
-		{
-			try
-			{
-				await new cnNeoAgent().Consolidate();
 
 				return Ok(new neoResponse(true, "OK", null));
 			}

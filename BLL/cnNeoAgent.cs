@@ -53,29 +53,5 @@ namespace NeoTrader.BLL
 				throw ex;
 			}
 		}
-		public async Task<bool> PredictiveData()
-		{
-			try
-			{
-				return daNeoAgent.SavePredictiveData();
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-		public async Task<bool> Consolidate()
-		{
-			try
-			{
-				daNeoAgent.Consolidate();
-				return true;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
 	}
 }

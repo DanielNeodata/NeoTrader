@@ -81,40 +81,4 @@ var _FUNCTIONS = {
 			_FUNCTIONS.onWait(false);
 		});
 	},
-	OnPredictiveData: function (_this) {
-		_FUNCTIONS.onWait(true);
-		_this.fadeOut("fast");
-		_FUNCTIONS.ExecutePostAjax("PredictiveData", null).then(function (data) {
-			window.location = "Symbols";
-		}).catch(function (e) {
-			if (e.Error != "") { alert(e.Error); }
-			_this.fadeIn("slow");
-			_FUNCTIONS.onWait(false);
-		});
-	},
-	OnConsolidate: function (_this) {
-		_FUNCTIONS.onWait(true);
-		_this.fadeOut("fast");
-		_FUNCTIONS.ExecutePostAjax("Consolidate", null).then(function (data) {
-			window.location = "Symbols";
-		}).catch(function (e) {
-			if (e.Error != "") { alert(e.Error); }
-			_this.fadeIn("slow");
-			_FUNCTIONS.onWait(false);
-		});
-	},
-	OnAll: function (_this) {
-		_FUNCTIONS.onWait(true);
-		_this.fadeOut("fast");
-		var _reset = 0;
-		if ($(".chkReset").prop("checked")) { _reset = 1; }
-		var _params = { "_reset": _reset };
-		_FUNCTIONS.ExecutePostAjax("All", _params).then(function (data) {
-			window.location = "Symbols";
-		}).catch(function (e) {
-			if (e.Error != "") { alert(e.Error); }
-			_this.fadeIn("slow");
-			_FUNCTIONS.onWait(false);
-		});
-	},
 }

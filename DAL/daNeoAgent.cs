@@ -77,7 +77,6 @@ namespace NeoTrader.DAL
 						ndx++;
 					}
 				}
-				Consolidate();
 				return records;
 			}
 		}
@@ -103,82 +102,6 @@ namespace NeoTrader.DAL
 				}
 
 				return records;
-			}
-		}
-		public static bool SavePredictiveData() {
-			int _i = 0;
-			DataTable data = daNeoAgent.GetRecords("SELECT * FROM dbo.mod_trader_data ORDER BY DatePrice ASC");
-			using (SqlConnection connection = new SqlConnection(neoContext.connString))
-			{
-				/*Entrenamiento del modelo*/
-				Predictor _state = new Predictor();
-				List<PredictorInputData> trainning = new List<PredictorInputData>();
-				foreach (DataRow item in data.Rows) { trainning.Add(CalculateGaussDay(item)); }
-				_state.Load(trainning);
-				
-				connection.Open();
-				SqlCommand cmd = new SqlCommand();
-				cmd.Connection = connection;
-				cmd.CommandType = CommandType.StoredProcedure;
-				cmd.CommandText = "dbo.mod_trader_data_predictive";
-				int ndx = 0;
-				foreach (DataRow item in data.Rows)
-				{
-					float _PredictNextDay = 0;
-					float _PredictNextWeek = 0;
-					float _PredictNextMonth = 0;
-
-					PredictorInputData _dataToday = CalculateGaussDay(item);
-
-					PredictorOutputData _prediction = _state.Predict(_dataToday);
-					_PredictNextDay = 0;
-					if (_prediction.Score < _dataToday.Close) { _PredictNextDay = -1; }
-					if (_prediction.Score > _dataToday.Close) { _PredictNextDay = 1; }
-
-					DateTime datePrice = Convert.ToDateTime(item["DatePrice"].ToString());
-
-					_dataToday.DatePrice = float.Parse(datePrice.AddDays(7).ToString("yyyyMMdd"));
-					PredictorOutputData _prediction7 = _state.Predict(_dataToday);
-					_PredictNextWeek = 0;
-					if (_prediction7.Score < _dataToday.Close) { _PredictNextWeek = -1; }
-					if (_prediction7.Score > _dataToday.Close) { _PredictNextWeek = 1; }
-
-					_dataToday.DatePrice = float.Parse(datePrice.AddMonths(1).ToString("yyyyMMdd"));
-					PredictorOutputData _prediction30 = _state.Predict(_dataToday);
-					_PredictNextMonth = 0;
-					if (_prediction30.Score < _dataToday.Close) { _PredictNextMonth = -1; }
-					if (_prediction30.Score > _dataToday.Close) { _PredictNextMonth = 1; }
-
-					cmd.Parameters.Clear();
-					cmd.Parameters.AddWithValue("@id", item["id"].ToString());
-					cmd.Parameters.AddWithValue("@PredictNextDay", _PredictNextDay);
-					cmd.Parameters.AddWithValue("@PredictNextWeek", _PredictNextWeek);
-					cmd.Parameters.AddWithValue("@PredictNextMonth", _PredictNextMonth);
-					cmd.Parameters.AddWithValue("@ModificadorBaseGauss", _dataToday.ModificadorBaseGauss);
-					cmd.Parameters.AddWithValue("@ModificadorMaterialGauss", _dataToday.ModificadorMaterialGauss);
-					cmd.Parameters.AddWithValue("@ModificadorFinalGauss", _dataToday.ModificadorFinalGauss);
-
-					_i = Convert.ToInt32(cmd.ExecuteScalar());
-					ndx++;
-				}
-				return true;
-			}
-		}
-		public static void Consolidate() {
-			List<SymbolsViewModelItems> _simbolos = neoContext.ConvertDataTableToList<SymbolsViewModelItems>(GetSymbols());
-			using (SqlConnection connection = new SqlConnection(neoContext.connString))
-			{
-				connection.Open();
-				SqlCommand cmd = new SqlCommand();
-				cmd.Connection = connection;
-				cmd.CommandType = CommandType.StoredProcedure;
-				cmd.CommandText = "dbo.mod_trader_symbols_consolida";
-				foreach (SymbolsViewModelItems record in _simbolos)
-				{
-					cmd.Parameters.Clear();
-					cmd.Parameters.AddWithValue("@Symbol", record.code);
-					cmd.ExecuteScalar();
-				}
 			}
 		}
 		public static PredictorInputData CalculateGaussDay(DataRow item)
@@ -211,15 +134,18 @@ namespace NeoTrader.DAL
 				DateTime.TryParse(solapado["FechaFinPicoGauss"].ToString(), out s_FechaFinPicoGauss);
 				if (!DateTime.TryParse(solapado["FechaFinGauss"].ToString(), out s_FechaFinGauss)) { s_FechaFinGauss = DateTime.Today; }
 
-				if (_today >= s_FechaInicioGauss) { 
+				if (_today >= s_FechaInicioGauss)
+				{
 					s_FechaInicioGauss = _today;
 					s_ValorFechaInicioGauss = (s_ValorFechaInicioGauss / neoContext.DayDiff(s_FechaInicioGauss));
 				}
-				if (_today >= s_FechaPicoGauss) {
+				if (_today >= s_FechaPicoGauss)
+				{
 					s_FechaPicoGauss = _today;
 					s_ValorFechaPicoGauss = (s_ValorFechaPicoGauss / neoContext.DayDiff(s_FechaPicoGauss));
 				}
-				if (_today >= s_FechaFinPicoGauss) { 
+				if (_today >= s_FechaFinPicoGauss)
+				{
 					s_FechaFinPicoGauss = _today;
 					s_ValorFechaPicoGauss = (s_ValorFechaPicoGauss / neoContext.DayDiff(s_FechaPicoGauss));
 				}
