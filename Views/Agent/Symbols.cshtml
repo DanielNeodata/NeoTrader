@@ -3,22 +3,41 @@
     string[] _date;
     string _52min = "";
     string _52max = "";
-
     string _pDay = "";
-    string _pWeek = "";
-    string _pMonth = "";
-
-    string _cDay = "";
-    string _cWeek = "";
-    string _cMonth = "";
 }
+<div class="d-none">
+    <label>Reset 1990</label>
+    <input type="checkbox" class="chkReset" id="chkReset" name="chkReset" value="1" />
+</div>
 <div class="container-fluid">
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-12">
-            <h4>Símbolos</h4>
+            <form class="d-flex" role="search" action="/Agent/Symbols">
+                <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item py-0 px-1 m-0 border-0 ml-4"><h4>NeoTrader</h4></li>
+                    <li class="list-group-item py-0 px-1 m-0 border-0">
+                        <a href="#" class="btn btn-sm btn-danger btnCaptureSymbols m-1">Capturar</a>
+                    </li>
+                    <li class="list-group-item py-0 px-1 m-0 border-0">
+                        <a href="#" class="btn btn-sm btn-warning btnTrain m-1">Entrenar</a>
+                    </li>
+                    <li class="list-group-item py-0 px-1 m-0 border-0">
+                        <a href="#" data-id="0" class="btn btn-sm btn-success btnPredict m-1">Predecir</a>
+                    </li>
+                    <li class="list-group-item py-0 px-1 m-0 border-0 mt-1 p-1">
+                        <input class="form-control" type="search" placeholder="Buscar..." aria-label="Search" />
+                    </li>
+                    <li class="list-group-item py-0 px-1 m-0 border-0">
+                        <button class="btn btn-sm btn-light mt-1" type="submit"><i class='bi bi-search'></i></button>
+                    </li>
+                    <li class="list-group-item py-0 px-1 m-0 border-0">
+                        <a href="/Agent/Symbols" class="btn btn-sm btn-light btnSymbols m-1"><i class='bi bi-arrow-clockwise'></i></a>
+                    </li>
+                </ul>
+            </form>
         </div>
     </div>
-
+    <hr />
     <div class="row">
         <div class="col-12 text-center">
             @if (Model.simbolos != null && Model.simbolos.Any())
@@ -26,6 +45,7 @@
                 <table class="table table-condensed table-hover" style="font-size:12px;">
                     <thead class="thead-dark">
                         <tr>
+                            <th></th>
                             <th class="text-dark text-start">Fecha</th>
                             <th class="text-dark text-start">Símbolo</th>
                             <th class="text-dark text-start">Tipo</th>
@@ -34,12 +54,7 @@
                             <th class="text-dark text-end">Volúmen</th>
                             <th class="text-dark text-end">Apertura</th>
                             <th class="text-dark text-end">Cierre</th>
-                            <th class="text-dark text-end">% día</th>
-                            <th class="text-dark text-end">% semana</th>
-                            <th class="text-dark text-end">% mes</th>
-                            <th class="text-dark text-center">+1</th>
-                            <th class="text-dark text-center">+7</th>
-                            <th class="text-dark text-center">+30</th>
+                            <th class="text-dark text-center">Predicción</th>
                             <th class="text-dark text-end">Vender</th>
                             <th class="text-dark text-end">Comprar</th>
                         </tr>
@@ -55,47 +70,15 @@
                             _pDay = "<span class='badge bg-info p-2'>=</span>";
                             switch (simbolo.PredictNextDay)
                             {
-                                case -1:
-                                    _pDay = "<span class='badge bg-danger p-2'>baja</span>";
+                                case 0:
+                                    _pDay = "<span class='badge bg-warning p-2'>se estima baja</span>";
                                     break;
                                 case 1:
-                                    _pDay = "<span class='badge bg-success p-2'>sube</span>";
+                                    _pDay = "<span class='badge bg-info p-2'>se estima alza</span>";
                                     break;
                             }
-                            _pWeek = "<span class='badge bg-info p-2'>=</span>";
-                            switch (simbolo.PredictNextWeek)
-                            {
-                                case -1:
-                                    _pWeek = "<span class='badge bg-danger p-2'>baja</span>";
-                                    break;
-                                case 1:
-                                    _pWeek = "<span class='badge bg-success p-2'>sube</span>";
-                                    break;
-                            }
-                            _pMonth = "<span class='badge bg-info p-2'>=</span>";
-                            switch (simbolo.PredictNextMonth)
-                            {
-                                case -1:
-                                    _pMonth = "<span class='badge bg-danger p-2'>baja</span>";
-                                    break;
-                                case 1:
-                                    _pMonth = "<span class='badge bg-success p-2'>sube</span>";
-                                    break;
-                            }
-                            _cDay = "text-info";
-                            if (simbolo.PercentageMovementPreviousDay > 0) { _cDay = "text-success"; } 
-                            if (simbolo.PercentageMovementPreviousDay < -0.01) { _cDay = "text-danger"; }
-                            if (simbolo.PercentageMovementPreviousDay > -0.01 && simbolo.PercentageMovementPreviousDay <= 0) { simbolo.PercentageMovementPreviousDay = 0; _cMonth = "text-info"; }
-                            _cWeek = "text-info";
-                            if (simbolo.PercentageMovementPreviousWeek > 0) { _cWeek = "text-success"; } 
-                            if (simbolo.PercentageMovementPreviousWeek < -0.01) { _cWeek = "text-danger"; }
-                            if (simbolo.PercentageMovementPreviousWeek > -0.01 && simbolo.PercentageMovementPreviousWeek <= 0) { simbolo.PercentageMovementPreviousWeek = 0; _cMonth = "text-info"; }
-                            _cMonth = "text-info";
-                            if (simbolo.PercentageMovementPreviousMonth > 0) { _cMonth = "text-success"; } 
-                            if (simbolo.PercentageMovementPreviousMonth < -0.01) { _cMonth = "text-danger"; }
-                            if (simbolo.PercentageMovementPreviousMonth > -0.01 && simbolo.PercentageMovementPreviousMonth <= 0) { simbolo.PercentageMovementPreviousMonth = 0; _cMonth = "text-info"; }
-
                             <tr>
+                                <td><a href="#" data-id="@simbolo.id" class="btn btn-sm btn-success btnPredict m-1"><i class='bi bi-patch-question'></a></td>
                                 @Html.Raw(neoContext.ToCompareDate(_date))
                                 <td class="text-start">@simbolo.code</td>
                                 <td class="text-start">@simbolo.instrumentType</td>
@@ -104,12 +87,7 @@
                                 <td class="text-end">@neoContext.ToMoney(simbolo.Volume, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Open, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Close, "")</td>
-                                <td class="@_cDay text-end">@neoContext.ToPercentage(simbolo.PercentageMovementPreviousDay)</td>
-                                <td class="@_cWeek text-end">@neoContext.ToPercentage(simbolo.PercentageMovementPreviousWeek)</td>
-                                <td class="@_cMonth text-end">@neoContext.ToPercentage(simbolo.PercentageMovementPreviousMonth)</td>
                                 <td class="text-center">@Html.Raw(_pDay)</td>
-                                <td class="text-center">@Html.Raw(_pWeek)</td>
-                                <td class="text-center">@Html.Raw(_pMonth)</td>
                                 <td class="text-success text-end bold">@Html.Raw(_52min) @neoContext.ToMoney(simbolo.Low, "")</td>
                                 <td class="text-danger text-end bold">@Html.Raw(_52max) @neoContext.ToMoney(simbolo.High, "")</td>
                             </tr>

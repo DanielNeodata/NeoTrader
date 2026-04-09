@@ -19,7 +19,7 @@ namespace NeoTrader.Models
 				simbolos.Clear();
 				return true;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				return false;
 			}

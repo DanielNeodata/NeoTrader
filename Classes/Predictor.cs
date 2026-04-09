@@ -7,7 +7,8 @@ namespace NeoTrader.Classes
 		private static uint ExperimentTime = 30;
 		private static string LabelColumnName = "Open";
 
-		public void Load(List<PredictorInputData> trainning) {
+		public void Load(List<PredictorInputData> trainning)
+		{
 			IDataView trainingDataView = mlContext.Data.LoadFromEnumerable(trainning);
 			ExperimentResult<RegressionMetrics> experimentResult = mlContext.Auto().CreateRegressionExperiment(ExperimentTime).Execute(trainingDataView, LabelColumnName);
 			RunDetail<RegressionMetrics> best = experimentResult.BestRun;
@@ -17,7 +18,8 @@ namespace NeoTrader.Classes
 			/*Ver de implementar : LightGBM with microsoft ml.net sample with C#*/
 		}
 
-		public PredictorOutputData Predict(PredictorInputData _actualState) {
+		public PredictorOutputData Predict(PredictorInputData _actualState)
+		{
 			PredictionEngine<PredictorInputData, PredictorOutputData> predEngine = mlContext.Model.CreatePredictionEngine<PredictorInputData, PredictorOutputData>(trainedModel);
 			return predEngine.Predict(_actualState);
 		}

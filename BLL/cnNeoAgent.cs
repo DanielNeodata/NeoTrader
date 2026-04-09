@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using NeoTrader.DAL;
-
-namespace NeoTrader.BLL
+﻿namespace NeoTrader.BLL
 {
 	public class cnNeoAgent
 	{
@@ -52,6 +49,65 @@ namespace NeoTrader.BLL
 			{
 				throw ex;
 			}
+		}
+		public async Task<bool> Consolidate()
+		{
+			try
+			{
+				return await daNeoAgent.Consolidate();
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+		public async Task<bool> Train()
+		{
+			try
+			{
+				await daNeoAgent.Train();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+		public async Task<neoResponse> Predict(int Id_symbol)
+		{
+			neoResponse _ret = new neoResponse(true, "", "");
+			try
+			{
+				StringBuilder _html = new StringBuilder();
+				if (Id_symbol == 0)
+				{
+					DataTable symbols = daNeoAgent.GetSymbols();
+					foreach (DataRow reg in symbols.Rows)
+					{
+						await daNeoAgent.Predict(Convert.ToInt32(reg["id"].ToString()));
+					}
+					_html.Append("<h4>Se han realizado las predicciones del día para todos los símbolos activos</h4>");
+					_html.Append("<h5>Vea la información en la columna 'Predicción'</h5>");
+				}
+				else {
+					PredictorOutputDataFormatted _prediction = await daNeoAgent.Predict(Id_symbol);
+					string _pre = "<span class='badge text-bg-warning'>Baja</span>";
+					if (_prediction.PredictedLabel) { _pre = "<span class='badge text-bg-info'>Alta</span>"; }
+					_html.Append($"<h5>Predicción solicitada <b>{_prediction.Symbol}</b></h5>");
+					_html.Append("<table class='table table-sm table-condensed'>");
+					_html.Append($"<tr><td>Predicción</td><td>{_pre}</td></tr>");
+					_html.Append($"<tr><td>Probabilidad</td><td>{_prediction.Probability}</td></tr>");
+					_html.Append($"<tr><td>Score</td><td>{_prediction.Score}</td></tr>");
+					_html.Append($"<tr><td>Algoritmo</td><td>{_prediction.Algoritmo}</td></tr>");
+					_html.Append("</table>");
+				}
+				_ret.Message= _html.ToString();
+			}
+			catch (Exception ex)
+			{
+				_ret.Error = ex.Message;
+			}
+			return _ret;
 		}
 	}
 }

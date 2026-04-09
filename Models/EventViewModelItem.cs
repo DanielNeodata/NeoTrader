@@ -1,6 +1,7 @@
 namespace NeoTrader.Models
 {
-	public class EventViewModelItem {
+	public class EventViewModelItem
+	{
 		public int? Id { get; set; }
 		public string? code { get; set; }
 		public string? description { get; set; }
@@ -22,10 +23,11 @@ namespace NeoTrader.Models
 		// Suma de ModificadorBaseGauss+ModificadorMaterialGauss
 		public double ModificadorFinalGauss { get; set; }
 
-		public EventViewModelItem(int? _id,string? _code,  string? _description,
+		public EventViewModelItem(int? _id, string? _code, string? _description,
 			DateTime? _FechaInicioGauss, DateTime? _FechaPicoGauss, DateTime? _FechaFinPicoGauss, DateTime? _FechaFinGauss,
 			double _ValorFechaInicioGauss, double _ValorFechaPicoGauss, double _ValorFechaFinPicoGauss, double _ValorFechaFinGauss,
-			double _ModificadorBaseGauss, double _ModificadorMaterialGauss, double _ModificadorFinalGauss) {
+			double _ModificadorBaseGauss, double _ModificadorMaterialGauss, double _ModificadorFinalGauss)
+		{
 			Id = _id;
 			code = _code;
 			description = _description;

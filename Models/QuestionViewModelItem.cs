@@ -1,8 +1,7 @@
-using System.Text;
-
 namespace NeoTrader.Models
 {
-	public class QuestionViewModelItem {
+	public class QuestionViewModelItem
+	{
 		public int? Id { get; set; }
 		public string? Descripcion { get; set; }
 		public float? Prediccion { get; set; }
