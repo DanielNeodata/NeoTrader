@@ -42,7 +42,7 @@
         <div class="col-12 text-center">
             @if (Model.simbolos != null && Model.simbolos.Any())
             {
-                <table class="table table-condensed table-hover" style="font-size:12px;">
+                <table class="table table-condensed table-hover table-sm" style="font-size:11px;">
                     <thead class="thead-dark">
                         <tr>
                             <th></th>
@@ -68,17 +68,17 @@
                             if (simbolo.Close <= simbolo.FiftyTwoWeekLow) { _52min = "<span class='badge bg-info p-2'>52</span>"; }
                             if (simbolo.Close >= simbolo.FiftyTwoWeekHigh) { _52max = "<span class='badge bg-primary p-2'>52</span>"; }
                             _pDay = "<span class='badge bg-info p-2'>=</span>";
-                            switch (simbolo.PredictNextDay)
+                            switch (simbolo.Predict)
                             {
                                 case 0:
-                                    _pDay = "<span class='badge bg-warning p-2'>se estima baja</span>";
+                                    _pDay = "<span class='badge bg-danger p-2'>BAJA</span>";
                                     break;
                                 case 1:
-                                    _pDay = "<span class='badge bg-info p-2'>se estima alza</span>";
+                                    _pDay = "<span class='badge bg-info p-2'>SUBE</span>";
                                     break;
                             }
                             <tr>
-                                <td><a href="#" data-id="@simbolo.id" class="btn btn-sm btn-success btnPredict m-1"><i class='bi bi-patch-question'></a></td>
+                                <td><a href="#" data-id="@simbolo.id" class="btn btn-sm btn-success btnPredict m-0 p-1 px-2"><i class='bi bi-patch-question'></i></a></td>
                                 @Html.Raw(neoContext.ToCompareDate(_date))
                                 <td class="text-start">@simbolo.code</td>
                                 <td class="text-start">@simbolo.instrumentType</td>
@@ -88,8 +88,8 @@
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Open, "")</td>
                                 <td class="text-muted text-end">@neoContext.ToMoney(simbolo.Close, "")</td>
                                 <td class="text-center">@Html.Raw(_pDay)</td>
-                                <td class="text-success text-end bold">@Html.Raw(_52min) @neoContext.ToMoney(simbolo.Low, "")</td>
-                                <td class="text-danger text-end bold">@Html.Raw(_52max) @neoContext.ToMoney(simbolo.High, "")</td>
+                                <td class="text-secondary text-end bold">@Html.Raw(_52min) @neoContext.ToMoney(simbolo.Low, "")</td>
+                                <td class="text-primary text-end bold">@Html.Raw(_52max) @neoContext.ToMoney(simbolo.High, "")</td>
                             </tr>
                         }
                     </tbody>

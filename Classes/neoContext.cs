@@ -2,7 +2,7 @@
 {
 	public static class neoContext
 	{
-		public static string connString = (@"encrypt=false;database=neo_trader;server=DESARROLLO\SQLEXPRESS;user=sa;password=08Z5il37;MultipleActiveResultSets=True");
+		public static string connString = (@"encrypt=false;database=neo_trader;server=LOCALHOST;user=sa;password=08Z5il37;MultipleActiveResultSets=True");
 		public static double _base = 100000000000;
 		public static CultureInfo deDECulture = CultureInfo.CreateSpecificCulture("de-DE");
 
@@ -41,15 +41,12 @@
 			if (Convert.ToDateTime(_day[0]) != DateTime.Today)
 			{
 				_html.Append("<td class='text-start text-danger'>");
-				_html.Append(_day[0]);
 			}
 			else
 			{
 				_html.Append("<td class='text-start text-success'>");
-				_html.Append(_day[0]);
-				_html.Append(" ");
-				_html.Append(_day[1]);
 			}
+			_html.Append(_day[0]);
 			_html.Append("</td>");
 
 			return _html.ToString();

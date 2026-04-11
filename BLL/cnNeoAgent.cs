@@ -91,8 +91,8 @@
 				}
 				else {
 					PredictorOutputDataFormatted _prediction = await daNeoAgent.Predict(Id_symbol);
-					string _pre = "<span class='badge text-bg-warning'>Baja</span>";
-					if (_prediction.PredictedLabel) { _pre = "<span class='badge text-bg-info'>Alta</span>"; }
+					string _pre = "<span class='badge bg-danger'>BAJA</span>";
+					if (_prediction.PredictedLabel) { _pre = "<span class='badge bg-info'>SUBE</span>"; }
 					_html.Append($"<h5>Predicción solicitada <b>{_prediction.Symbol}</b></h5>");
 					_html.Append("<table class='table table-sm table-condensed'>");
 					_html.Append($"<tr><td>Predicción</td><td>{_pre}</td></tr>");

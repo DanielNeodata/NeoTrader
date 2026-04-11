@@ -26,9 +26,6 @@ namespace NeoTrader.Models
 		public double PercentageMovementPreviousDay { get; set; }
 		public double PercentageMovementPreviousWeek { get; set; }
 		public double PercentageMovementPreviousMonth { get; set; }
-		public double SplitFactor { get; set; }
-		public double PredictNextDay { get; set; }
-		public double PredictNextWeek { get; set; }
-		public double PredictNextMonth { get; set; }
+		public double Predict { get; set; }
 	}
 }

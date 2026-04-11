@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using System.Reflection;
+﻿using System.Reflection;
 using static Microsoft.ML.DataOperationsCatalog;
+using NeoConsole.Classes;
 
 namespace NeoTrader.DAL
 {
@@ -79,7 +79,7 @@ namespace NeoTrader.DAL
 				SqlCommand cmd = new SqlCommand();
 				cmd.Connection = connection;
 				cmd.CommandType = CommandType.Text;
-				cmd.CommandText = "UPDATE dbo.mod_trader_symbols SET PredictNextDay=" + _iPredict.ToString() + " WHERE id=" + Id_symbol.ToString();
+				cmd.CommandText = "UPDATE dbo.mod_trader_symbols SET Predict=" + _iPredict.ToString() + " WHERE id=" + Id_symbol.ToString();
 				cmd.ExecuteNonQuery();
 			}
 			return true;
@@ -225,6 +225,7 @@ namespace NeoTrader.DAL
 			}
 			ModificadorBaseGauss = (ModificadorMaterialGauss / i);
 			ModificadorFinalGauss = (ModificadorBaseGauss + ModificadorMaterialGauss);
+			/*
 			return new PredictorInputData()
 			{
 				DatePrice = float.Parse(Convert.ToDateTime(item["DatePrice"].ToString()).ToString("yyyyMMdd")),
@@ -238,7 +239,29 @@ namespace NeoTrader.DAL
 				ModificadorMaterialGauss = ModificadorMaterialGauss,
 				ModificadorFinalGauss = ModificadorFinalGauss
 			};
+			*/
 
+			return new PredictorInputData()
+			{
+				DatePrice = float.Parse(Convert.ToDateTime(item["DatePrice"].ToString()).ToString("yyyyMMdd")),
+				Ret1D = float.Parse(item["Ret1D"].ToString()),
+				Ret5D = float.Parse(item["Ret5D"].ToString()),
+				Ret10D = float.Parse(item["Ret10D"].ToString()),
+				Ret20D = float.Parse(item["Ret20D"].ToString()),
+				PriceSma10 = float.Parse(item["PriceSma10"].ToString()),
+				PriceSma20 = float.Parse(item["PriceSma20"].ToString()),
+				PriceSma50 = float.Parse(item["PriceSma50"].ToString()),
+				Volatility10 = float.Parse(item["Volatility10"].ToString()),
+				Volatility20 = float.Parse(item["Volatility20"].ToString()),
+				VolumeRatio = float.Parse(item["VolumeRatio"].ToString()),
+				Rsi = float.Parse(item["Rsi"].ToString()),
+				BbPosition = float.Parse(item["BbPosition"].ToString()),
+				DistMax = float.Parse(item["DistMax"].ToString()),
+				DistMin = float.Parse(item["DistMin"].ToString()),
+				ModificadorBaseGauss = ModificadorBaseGauss,
+				ModificadorMaterialGauss = ModificadorMaterialGauss,
+				ModificadorFinalGauss = ModificadorFinalGauss
+			};
 		}
 		public static EventViewModelItem CalculateGaussEvent(DataRow item)
 		{
@@ -335,6 +358,45 @@ namespace NeoTrader.DAL
 		{
 			int _i = 0;
 			DataTable symbols = daNeoAgent.GetSymbols();
+
+			/*Realizar las acciones de recalculo de indicadores precisos*/
+			foreach (DataRow symbol in symbols.Rows)
+			{
+				string _sql = "SELECT * FROM dbo.mod_trader_data WHERE id_symbol=" + symbol["id"].ToString() + " AND Ret1D is null ORDER BY DatePrice ASC";
+				DataTable _solapados = daNeoAgent.GetRecords(_sql);
+				List<StockDB> Originales = new List<StockDB>();
+				foreach (DataRow solapado in _solapados.Rows)
+				{
+					try
+					{
+						Originales.Add(new StockDB()
+						{
+							id_data = Convert.ToInt32(solapado["id"].ToString()),
+							id_symbol = Convert.ToInt32(solapado["id_symbol"].ToString()),
+							DatePrice = Convert.ToDateTime(solapado["DatePrice"].ToString()),
+							Open = float.Parse(solapado["Open"].ToString()),
+							RegularMarketVolume = float.Parse(solapado["RegularMarketVolume"].ToString()),
+							Volume = float.Parse(solapado["Volume"].ToString()),
+							FiftyTwoWeekLow = float.Parse(solapado["FiftyTwoWeekLow"].ToString()),
+							FiftyTwoWeekHigh = float.Parse(solapado["FiftyTwoWeekHigh"].ToString()),
+							RegularMarketDayLow = float.Parse(solapado["RegularMarketDayLow"].ToString()),
+							RegularMarketDayHigh = float.Parse(solapado["RegularMarketDayHigh"].ToString()),
+							Low = float.Parse(solapado["Low"].ToString()),
+							High = float.Parse(solapado["High"].ToString()),
+							Close = float.Parse(solapado["Close"].ToString()),
+							PercentageMovementPreviousDay = float.Parse(solapado["PercentageMovementPreviousDay"].ToString()),
+							PercentageMovementPreviousWeek = float.Parse(solapado["PercentageMovementPreviousWeek"].ToString()),
+							PercentageMovementPreviousMonth = float.Parse(solapado["PercentageMovementPreviousMonth"].ToString())
+						});
+					}
+					catch (Exception err) {
+						int p = 0;
+					}
+				}
+				UpdataData(TransformaDatos.Transforma(Originales));
+			}
+
+			/*Desnormalizacion de valores en cabecera de symbols*/
 			using (SqlConnection connection = new SqlConnection(neoContext.connString))
 			{
 				connection.Open();
@@ -350,6 +412,40 @@ namespace NeoTrader.DAL
 				}
 				return true;
 			}
+		}
+
+		public static bool UpdataData(List<StockData> Transformados) {
+			int _i = 0;
+			using (SqlConnection connection = new SqlConnection(neoContext.connString))
+			{
+				connection.Open();
+				SqlCommand cmd = new SqlCommand();
+				cmd.Connection = connection;
+				cmd.CommandType = CommandType.StoredProcedure;
+
+				foreach (StockData transformado in Transformados)
+				{
+					cmd.CommandText = "dbo.mod_trader_data_update";
+					cmd.Parameters.Clear();
+					cmd.Parameters.AddWithValue("@id", transformado.id_data);
+					cmd.Parameters.AddWithValue("Ret1D", transformado.Ret1D);
+					cmd.Parameters.AddWithValue("Ret5D", transformado.Ret5D);
+					cmd.Parameters.AddWithValue("Ret10D", transformado.Ret10D);
+					cmd.Parameters.AddWithValue("Ret20D", transformado.Ret20D);
+					cmd.Parameters.AddWithValue("PriceSma10", transformado.PriceSma10);
+					cmd.Parameters.AddWithValue("PriceSma20", transformado.PriceSma20);
+					cmd.Parameters.AddWithValue("PriceSma50", transformado.PriceSma50);
+					cmd.Parameters.AddWithValue("Volatility10", transformado.Volatility10);
+					cmd.Parameters.AddWithValue("Volatility20", transformado.Volatility20);
+					cmd.Parameters.AddWithValue("VolumeRatio", transformado.VolumeRatio);
+					cmd.Parameters.AddWithValue("Rsi", transformado.Rsi);
+					cmd.Parameters.AddWithValue("BbPosition", transformado.BbPosition);
+					cmd.Parameters.AddWithValue("DistMax", transformado.DistMax);
+					cmd.Parameters.AddWithValue("DistMin", transformado.DistMin);
+					_i = Convert.ToInt32(cmd.ExecuteScalar());
+				}
+			}
+			return true;
 		}
 		public static async Task<bool> Train()
 		{
